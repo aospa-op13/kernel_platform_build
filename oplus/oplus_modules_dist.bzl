@@ -17,10 +17,9 @@ def ddk_copy_to_dist_dir(
     if name == None:
         name = "ddk_oplus_default"
 
-    # Handle conditionally compiled code when a compilation condition exists
+    # Handle conditionally compiled code when compilation conditions exist
     if conditional_builds:
-        # oplus_feature_list
-        # Get variables passed from environment variables
+        # Get variables passed from environment variables; oplus_feature_list is a dictionary.
         oplus_feature_list = oplus_ddk_get_oplus_features()
         for module in module_list:
             # When there are compilation conditions for this module,
@@ -65,3 +64,4 @@ def ddk_copy_to_dist_dir(
                 allow_duplicate_filenames = False,
                 mode_overrides = {"**/*": "644"},
             )
+

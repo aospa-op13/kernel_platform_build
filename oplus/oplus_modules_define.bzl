@@ -1,20 +1,26 @@
 load("//build/kernel/kleaf:kernel.bzl", "ddk_module")
 load("//msm-kernel:target_variants.bzl", "get_all_la_variants")
 load(":oplus_modules_variant.bzl",
-"bazel_support_target",
-"bazel_support_variant"
+    "bazel_support_target",
+    "bazel_support_variant",
+    "LINUX_KERNEL_VERSION"
 )
 load(":oplus_modules_variant.bzl", "OPLUS_FEATURES")
 
 bazel_support_platform = "qcom"
 bazel_wifionly = None
 
-def oplus_ddk_get_targets():
-    return bazel_support_target
+def oplus_ddk_get_target():
+    return bazel_support_target[0]
 
+def oplus_ddk_get_variant():
+    return bazel_support_variant[0]
+
+def oplus_ddk_get_kernel_version():
+    return LINUX_KERNEL_VERSION
 
 """
-OPLUS_FEATURE
+Convert environment variables prefixed with OPLUS_FEATURE_ into a dictionary
 """
 def oplus_ddk_get_oplus_features():
     oplus_feature_list = {}
@@ -29,7 +35,7 @@ def oplus_ddk_get_oplus_features():
 
 
 """
-OPLUS_FEATURE
+Convert environment variables prefixed with OPLUS_FEATURE_ into a dictionary
 """
 def get_oplus_features_as_list():
     oplus_features = []
@@ -55,11 +61,15 @@ def define_oplus_ddk_module(
     linux_includes = None,
     out = None,
     local_defines = None,
+    kconfig = None,
+    defconfig = None,
     copts = None,
-    conditional_build = None):
+    conditional_build = None,
+    **kwargs):
 
+    # Remove modules that do not meet the compilation conditions during compilation
     if conditional_build:
-        # OPLUS_FEATURES
+        # Decode OPLUS_FEATURES from environment variables
         oplus_feature_list = oplus_ddk_get_oplus_features()
 
         skip = 0
@@ -108,10 +118,7 @@ def define_oplus_ddk_module(
         else:
             local_defines = flattened_conditional_defines
 
-    #fail("debug need variable {}".format(local_defines))
-
-    #for (targets, variant) in get_all_la_variants():
-    for targets in bazel_support_target:
+    for target in bazel_support_target:
         for variant in bazel_support_variant:
             ddk_module(
                 name = "{}".format(name),
@@ -124,6 +131,9 @@ def define_oplus_ddk_module(
                 linux_includes = linux_includes,
                 hdrs = hdrs,
                 deps = ["//msm-kernel:all_headers"] + header_deps + ko_deps,
-                kernel_build = "//msm-kernel:{}_{}".format(targets,variant),
-                visibility = ["//visibility:public"]
+                kernel_build = "//msm-kernel:{}_{}".format(target,variant),
+                kconfig = kconfig,
+                defconfig = defconfig,
+                visibility = ["//visibility:public"],
+                **kwargs
             )
