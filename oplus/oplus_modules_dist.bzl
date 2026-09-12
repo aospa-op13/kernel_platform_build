@@ -58,7 +58,7 @@ def ddk_copy_to_dist_dir(
             copy_to_dist_dir(
                 name = "{}_{}_{}_dist".format(targets,variant,name),
                 data = data,
-                dist_dir = "out/target/product/{}_{}/dlkm/lib/modules/".format(targets,variant),
+                dist_dir = "out/target/product/{}/dlkm/lib/modules/".format(targets),
                 flat = True,
                 wipe_dist_dir = False,
                 allow_duplicate_filenames = False,

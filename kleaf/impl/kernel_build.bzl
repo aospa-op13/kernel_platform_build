@@ -91,7 +91,9 @@ def kernel_build(
         name,
         build_config,
         outs,
-        keep_module_symvers = None,
+        #ifdef OPLUS_EDIT
+        keep_module_symvers = True,
+        #end
         srcs = None,
         module_outs = None,
         implicit_outs = None,

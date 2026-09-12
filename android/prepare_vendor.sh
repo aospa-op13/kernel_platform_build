@@ -91,7 +91,7 @@
 # Currently only DTBs are compiled from folders matching this pattern:
 
 set -e
-
+OUT_DIR=""
 # rel_path <to> <from>
 # Generate relative directory path to reach directory <to> from <from>
 function rel_path() {
@@ -293,10 +293,11 @@ if [ "${RECOMPILE_ABL}" == "1" ] && [ -n "${TARGET_BUILD_VARIANT}" ] && \
     (
       cd "${ROOT_DIR}"
 
-      ./tools/bazel run \
+      ./tools/bazel run "--incompatible_sandbox_hermetic_tmp=false" \
         --"//bootable/bootloader/edk2:target_build_variant=${TARGET_BUILD_VARIANT}" \
+        --"//bootable/bootloader/edk2:oplus_vnd_build_platform=${OPLUS_VND_BUILD_PLATFORM}" \
         "//msm-kernel:${KERNEL_TARGET}_${KERNEL_VARIANT}_abl_dist" \
-        -- --dist_dir "${ANDROID_KP_OUT_DIR}/abl"
+        -- --destdir "${ANDROID_KP_OUT_DIR}/abl"
     )
 
   COPY_ABL_NEEDED=1
@@ -321,6 +322,7 @@ if [ "${RECOMPILE_EXT_MODULE}" != "0" ]; then
         export CONFIG_OPLUS_FEATURE_MIXED_BUILD="y"
         export CONFIG_OPLUS_FEATURE_MIXED_VND=${CHIPSET_COMPANY}
         KBUILD_OPTIONS+=("CHIPSET_COMPANY=${CHIPSET_COMPANY}")
+        KBUILD_OPTIONS+=("OPLUS_VND_BUILD_PLATFORM=${OPLUS_VND_BUILD_PLATFORM}")
         if [ -z "${EXT_MODULES}" ];then
             EXT_MODULES=$(cat build/kernel/oplus/config/modules.ext.oplus)
         fi
@@ -644,3 +646,8 @@ fi
 
 # remove bazel dir to avoid build issues
 rm -rf ${ANDROID_BUILD_TOP}/kernel_platform/out/bazel
+
+if [ ! -d "${ANDROID_BUILD_TOP}/out" ];then
+    mkdir -p ${ANDROID_BUILD_TOP}/out
+fi
+cp -r ${ANDROID_KP_OUT_DIR}/* ${ANDROID_BUILD_TOP}/out/
