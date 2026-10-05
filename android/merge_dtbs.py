@@ -544,7 +544,7 @@ def main():
 		# See DeviceTreeInfo.__gt__; this checks whether dtbo is more specific than the base
 		if dtbo > base:
 			cmd = ['ufdt_apply_overlay', base.filename, dtbo.filename, '/dev/null']
-			logging.debug(' '.join(cmd))
+			logging.info(' '.join(cmd))
 			subprocess.run(cmd, check=True)
 
 
