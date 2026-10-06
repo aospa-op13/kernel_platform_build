@@ -294,7 +294,6 @@ if [ "${RECOMPILE_ABL}" == "1" ] && [ -n "${TARGET_BUILD_VARIANT}" ] && \
 
       ./tools/bazel run "--incompatible_sandbox_hermetic_tmp=false" \
         --"//bootable/bootloader/edk2:target_build_variant=${TARGET_BUILD_VARIANT}" \
-        --"//bootable/bootloader/edk2:oplus_vnd_build_platform=${OPLUS_VND_BUILD_PLATFORM}" \
         "//msm-kernel:${KERNEL_TARGET}_${KERNEL_VARIANT}_abl_dist" \
         -- --dist_dir "${ANDROID_KP_OUT_DIR}/abl"
     )
@@ -321,7 +320,6 @@ if [ "${RECOMPILE_EXT_MODULE}" != "0" ]; then
         export CONFIG_OPLUS_FEATURE_MIXED_BUILD="y"
         export CONFIG_OPLUS_FEATURE_MIXED_VND=${CHIPSET_COMPANY}
         KBUILD_OPTIONS+=("CHIPSET_COMPANY=${CHIPSET_COMPANY}")
-        KBUILD_OPTIONS+=("OPLUS_VND_BUILD_PLATFORM=${OPLUS_VND_BUILD_PLATFORM}")
         KBUILD_OPTIONS+=("OPLUS_FEATURE_BSP_DRV_VND_INJECT_TEST=${OPLUS_FEATURE_BSP_DRV_INJECT_TEST}")
         if [ -z "${EXT_MODULES}" ];then
             EXT_MODULES=$(cat oplus/config/modules.ext.oplus)
