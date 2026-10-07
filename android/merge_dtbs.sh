@@ -105,5 +105,5 @@ function dtbo_pack_by_proj_name(){
 dtbo_pack_by_proj_name ${3}
 [[ -n "$(find ${3} -type f -name '*.dtb')" ]] && cat ${3}/*.dtb > ${3}/dtb.img
 #[[ -n "$(find ${3} -type f -name '*.dtbo')" ]] && mkdtboimg create ${3}/dtbo.img --page_size=${PAGE_SIZE} ${3}/*.dtbo
-[[ -n "$(find ${3} -type f -name '*dtbo.img')" ]] && (img=($(find ${3} -type f -name '*dtbo.img'));cp ${img[0]} ${3}/dtbo.img)
+[[ -n "$(find ${3} -type f -name '*dtbo.img')" ]] && (img=($(find ${3} -type f -name '*dodge*dtbo.img'));cp ${img[0]} ${3}/dtbo.img)
 exit 0
